@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Your Orders &mdash; TradeSphere{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Your Orders</h1>
+</div>
+
+{% if orders %}
+    <table class="table" style="margin-bottom:64px">
+        <thead>
+        <tr>
+            <th>Order</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>#{{ order.pk }}</td>
+                <td>{{ order.created_at|date:"j M Y" }}</td>
+                <td>{{ order.items.count }}</td>
+                <td>${{ order.total|floatformat:2 }}</td>
+                <td><span class="status">{{ order.get_status_display }}</span></td>
+                <td><a class="btn btn-outline" href="{{ order.get_absolute_url }}">View</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty">
+        <h2>No orders yet</h2>
+        <p>When you place an order it will appear here.</p>
+        <a class="btn" href="{% url 'store:product_list' %}" style="margin-top:18px">Shop Watches</a>
+    </div>
+{% endif %}
+{% endblock %}

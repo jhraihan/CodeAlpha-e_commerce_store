@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{% if current_category %}{{ current_category.name }} &mdash; TradeSphere{% else %}TradeSphere{% endif %}{% endblock %}
+
+{% block content %}
+<section class="section" id="catalog">
+    <h1 class="page-title">
+        {% if current_category %}{{ current_category.name }}{% else %}All Products{% endif %}
+    </h1>
+
+    <div class="filters">
+        <a class="chip {% if not current_category %}active{% endif %}" href="{% url 'store:product_list' %}">All</a>
+        {% for category in categories %}
+            <a class="chip {% if current_category.id == category.id %}active{% endif %}"
+               href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+        {% endfor %}
+    </div>
+
+    {% if page_obj %}
+        <div class="grid">
+            {% for product in page_obj %}
+                {% include "store/_product_card.html" with product=product %}
+            {% endfor %}
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                <span class="current">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty">
+            <h2>Nothing here yet</h2>
+            <p>No products in this collection right now.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

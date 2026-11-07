@@ -1,0 +1,15 @@
+<a class="card" href="{{ product.get_absolute_url }}">
+    <div class="card-media">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+        {% else %}
+            <span class="media-mark">{{ product.name|slice:":1" }}</span>
+        {% endif %}
+        {% if not product.in_stock %}<span class="badge badge-out">Sold Out</span>{% endif %}
+    </div>
+    <div class="card-body">
+        <p class="card-cat">{{ product.category.name }}</p>
+        <h3 class="card-name">{{ product.name }}</h3>
+        <p class="card-price">${{ product.price }}</p>
+    </div>
+</a>

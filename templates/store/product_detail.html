@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} &mdash; TradeSphere{% endblock %}
+
+{% block content %}
+<div class="detail">
+    <div class="detail-media">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+            <span class="media-name">{{ product.name }}</span>
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+        <a class="back-link" href="{% url 'store:product_list' %}">&larr; Back to products</a>
+        <p class="card-cat">{{ product.category.name }}</p>
+        <h1>{{ product.name }}</h1>
+        <p class="detail-price">${{ product.price }}</p>
+
+        {% if product.in_stock %}
+            <p class="stock-ok">In stock &mdash; {{ product.stock }} available</p>
+        {% else %}
+            <p class="stock-out">Out of stock</p>
+        {% endif %}
+
+        <p class="detail-desc">{{ product.description }}</p>
+
+        {% if product.in_stock %}
+            <form class="buy-row" method="post" action="{% url 'store:cart_add' product.id %}">
+                {% csrf_token %}
+                <input class="qty" type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button class="btn" type="submit">Add to Cart</button>
+            </form>
+        {% else %}
+            <div class="buy-row">
+                <button class="btn" type="button" disabled>Out of Stock</button>
+            </div>
+        {% endif %}
+
+        <p class="detail-note">Cash on delivery. Pay when your order arrives.</p>
+    </div>
+</div>
+
+{% if related_products %}
+<section class="section">
+    <h2 class="page-title">More from {{ product.category.name }}</h2>
+    <div class="grid">
+        {% for item in related_products %}
+            {% include "store/_product_card.html" with product=item %}
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

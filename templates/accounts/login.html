@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Log In &mdash; TradeSphere{% endblock %}
+
+{% block content %}
+<div class="auth">
+    <h1>Welcome back</h1>
+    <p class="auth-sub">Log in to check out and view your orders.</p>
+
+    {% if show_demo_login %}
+        <div class="demo-box">
+            <p class="demo-title">Demo account</p>
+            <dl class="demo-creds">
+                <dt>Username</dt>
+                <dd>demo</dd>
+                <dt>Password</dt>
+                <dd>demo12345</dd>
+            </dl>
+            <button class="demo-fill" type="button" data-demo-fill>Fill in these details</button>
+        </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="notice notice-error">Invalid username or password.</div>
+        {% endif %}
+
+        <div class="form-row">
+            <label for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-row">
+            <label for="{{ form.password.id_for_label }}">Password</label>
+            {{ form.password }}
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="btn btn-block" type="submit">Log In</button>
+    </form>
+
+    <p class="auth-alt">New here? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if show_demo_login %}
+<script>
+    document.querySelector("[data-demo-fill]").addEventListener("click", function () {
+        document.getElementById("id_username").value = "demo";
+        document.getElementById("id_password").value = "demo12345";
+    });
+</script>
+{% endif %}
+{% endblock %}

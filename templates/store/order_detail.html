@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.pk }} &mdash; TradeSphere{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Order #{{ order.pk }}</h1>
+    <p>Placed on {{ order.created_at|date:"j F Y, H:i" }} &nbsp;
+        <span class="status">{{ order.get_status_display }}</span></p>
+</div>
+
+<div class="cart-layout">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in order.items.all %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>${{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.line_total|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <aside class="panel">
+        <h3>Delivery Details</h3>
+        <p>{{ order.full_name }}<br>
+            {{ order.address }}<br>
+            {{ order.city }} {{ order.postal_code }}<br>
+            {{ order.phone }}<br>
+            {{ order.email }}</p>
+        <div class="sum-row total">
+            <span>Total</span>
+            <span>${{ order.total|floatformat:2 }}</span>
+        </div>
+        <p class="help">Payment is cash on delivery.</p>
+        <a class="btn btn-outline btn-block" href="{% url 'store:order_list' %}">All Orders</a>
+    </aside>
+</div>
+{% endblock %}
